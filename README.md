@@ -78,3 +78,10 @@ Your test should now looks like this:
     }
 
 ```
+
+### Task 3
+Objectives:
+- change signature
+
+Change the signature of the exchange method to make is accept a Dollar object.
+You will have to move the call of the getAmount method inside the exchange method.
