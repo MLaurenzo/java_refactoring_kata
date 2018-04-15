@@ -23,9 +23,6 @@ To do so, extract the "1.50" hardcoded value into a variable.
 Then change it to "dollar * 0.75", your test is now suppose to pass.
 To be cleaner, extract the "0.75" into a constant.
 
-This kind of pattern is also called "triangulation":
-you wait for the second test to refactor the hardcoded value to the real implementation.
-
 ### Task 2
 Objectives:
 - extract method object
@@ -88,7 +85,7 @@ You will have to move the call of the getAmount method inside the exchange metho
 
 ### Task 4
 Objectives:
-- extract Superclass
+- extract superclass
 - pull members up
 
 Add the following test in to your test suite:
@@ -179,6 +176,55 @@ public class Euro extends Money {
 public class Dollar extends Money {
     Dollar(double amount) {
         super(amount);
+    }
+}
+
+```
+
+### Task 5
+Objectives:
+- make static
+- extract delegate
+
+Extract the body of the equals method in to the method compare.
+Make the compare method static.
+Extract delegate the compare method into the Bank class.
+
+Your code should looks like this:
+```
+package exercice_1;
+
+public class Bank {
+    static boolean compare(Money m, Object o) {
+        if (m == o) return true;
+        if (o == null || m.getClass() != o.getClass()) return false;
+
+        Money money = (Money) o;
+
+        return Double.compare(money.amount, m.amount) == 0;
+    }
+}
+
+public class Money {
+    protected double amount;
+
+    public Money(double amount) {
+        this.amount = amount;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return Bank.compare(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(amount);
+        return (int) (temp ^ (temp >>> 32));
     }
 }
 
