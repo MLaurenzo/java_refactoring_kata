@@ -1,5 +1,5 @@
 # java refactoring kata
-The goal of this project is to practice refactoring skills through different exercice.
+The goal of this project is to practice refactoring skills through different exercices.
 
 ## Exercice 1 - the currency exchanger
 Before begining, let's have a look at the tests.
@@ -10,8 +10,8 @@ Before begining, let's have a look at the tests.
         Assert.assertEquals(0, Double.compare(1.50, CurrencyExchanger.exchange(2)));
     }
 ```
-There is only one test which ensure the exchange rate is 1 dollar for 0.75 euro.
-Before changing the code, make sure the test pass.
+There is only one test which ensures the exchange rate is 1 dollar for 0.75 euro.
+Before changing the code, make sure the test passes.
 
 ### Task 1
 Objectives:
@@ -52,7 +52,7 @@ All these steps should create a Euro class like this one:
 ```
 package exercice_1;
 
-class Euro {
+public class Euro {
 
     private double amount;
 
@@ -85,3 +85,101 @@ Objectives:
 
 Change the signature of the exchange method to make is accept a Dollar object.
 You will have to move the call of the getAmount method inside the exchange method.
+
+### Task 4
+Objectives:
+- extract Superclass
+- pull members up
+
+Add the following test in to your test suite:
+```
+    @Test
+    public void equality() {
+        Assert.assertEquals(new Euro(1), new Euro(1));
+        Assert.assertEquals(new Dollar(1), new Dollar(1));
+    }
+```
+To make it pass you need to implement the equals and hash methods in the Euro and Dollar classes.
+For instances, you can  write it this way:
+```
+package exercice_1;
+
+public class Euro {
+
+    private double amount;
+
+    Euro(double amount) {
+        this.amount = amount;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Euro euro = (Euro) o;
+
+        return Double.compare(euro.amount, amount) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(amount);
+        return (int) (temp ^ (temp >>> 32));
+    }
+}
+```
+Now you have a lot of duplicated code between the Euro and the Dollar classes, let's remove it.
+
+From the Euro class, extract the Superclass Money.
+Pull all the members (fields and methods) from the Euro class to Money class.
+Adapt the Dollar class to make it extends the Money class.
+You should have something like this:
+```
+package exercice_1;
+
+public class Money {
+    protected double amount;
+
+    public Money(double amount) {
+        this.amount = amount;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Money money = (Money) o;
+
+        return Double.compare(money.amount, amount) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(amount);
+        return (int) (temp ^ (temp >>> 32));
+    }
+}
+
+public class Euro extends Money {
+    Euro(double amount) {
+        super(amount);
+    }
+}
+
+public class Dollar extends Money {
+    Dollar(double amount) {
+        super(amount);
+    }
+}
+
+```
