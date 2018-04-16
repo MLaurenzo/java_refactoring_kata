@@ -80,7 +80,7 @@ Your test should now looks like this:
 Objectives:
 - change signature
 
-Change the signature of the exchange method to make is accept a Dollar object.
+Change the signature of the exchange method to make it accept a Dollar object.
 You will have to move the call of the getAmount method inside the exchange method.
 
 ### Task 4
